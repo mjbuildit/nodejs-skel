@@ -1,0 +1,77 @@
+Parameters:
+  Tag:
+    Type: String
+    Default: latest
+
+  DesiredCount:
+    Type: Number
+
+  TargetGroupArn:
+    Type: String
+
+  ClusterArn:
+    Type: String
+
+  Repository:
+    Type: String
+
+  AppName:
+    Type: String
+
+  ContainerPort:
+    Type: Number
+
+  HostPort:
+    Type: Number
+
+
+Resources:
+  ECSServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ecs-svc-${AWS::StackName}
+      Path: /
+      AssumeRolePolicyDocument: |
+        {
+            "Statement": [{
+                "Effect": "Allow",
+                "Principal": { "Service": [ "ecs.amazonaws.com" ]},
+                "Action": [ "sts:AssumeRole" ]
+            }]
+        }
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole
+
+  Service:
+    Type: AWS::ECS::Service
+    DependsOn: ECSServiceRole
+    Properties:
+      Cluster: !Ref ClusterArn
+      Role: !Ref ECSServiceRole
+      DesiredCount: !Ref DesiredCount
+      TaskDefinition: !Ref TaskDefinition
+      LoadBalancers:
+        - ContainerName: !Ref AppName
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref TargetGroupArn
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub ${AWS::StackName}-${AppName}
+      ContainerDefinitions:
+        - Name: !Ref AppName
+          Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${Tag}
+          EntryPoint:
+            - /usr/sbin/nginx
+            - -g
+            - 'daemon off;'
+          Essential: true
+          Memory: 128
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              HostPort: !Ref HostPort
+              Protocol: HTTP
+          Environment:
+            - Name: Tag
+              Value: !Ref Tag
