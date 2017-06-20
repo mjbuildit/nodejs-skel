@@ -28,8 +28,7 @@ phases:
       - npm run test:ci
       - npm run lint
       - npm run validate
-      - npm run secrurity
-      - npm run build:prod
+      - npm run security
 #      - /usr/local/bin/sonar-scanner -Dsonar.projectVersion=${version}
       - npm shrinkwrap
       - docker build --tag "$(cat /tmp/build_tag.out)" .
