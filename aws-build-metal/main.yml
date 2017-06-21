@@ -5,20 +5,22 @@ Parameters:
 
   GitHubRepo:
     Type: String
-    Description:  The repo to build from.
+    Description:  The name of the repo to build.
 
   GitHubBranch:
     Type: String
-    Description:  The branch to build and deploy.
+    Default: master
+    Description:  The name of the branch to build and deploy.
 
   GitHubUser:
     Type: String
-    Description:  Combined with the Github Token, allows CodeBuild to access the GitHubRepo.
+    Default: buildit
+    Description:  \"Owner\" of the repo.  Most likely will be \"buildit\" (as in buildit/twig in Github).
 
   GitHubToken:
     Type: String
     NoEcho: true
-    Description:  Combined with the Github User, allows CodeBuild to access the GitHubRepo.
+    Description:  Oauth token from Github.  CodeBuild to access the GitHubRepo.
 
   TargetGroupArn:
     Type: String
@@ -30,6 +32,7 @@ Parameters:
 
   CfnTemplateBucket:
     Type: String
+    Default:  twig-build-metal
     Description:  The bucket specific to this project which contains this and related templates (use ./bin/deploy script to package the templates in S3).
 
   BuildComputeType:
