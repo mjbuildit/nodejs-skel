@@ -51,7 +51,7 @@ Resources:
       DesiredCount: !Ref DesiredCount
       TaskDefinition: !Ref TaskDefinition
       LoadBalancers:
-        - ContainerName: !Ref AppName
+        - ContainerName: !Sub ${AppName}-cnt
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroupArn
 
@@ -60,12 +60,13 @@ Resources:
     Properties:
       Family: !Sub ${AWS::StackName}-${AppName}
       ContainerDefinitions:
-        - Name: !Ref AppName
+        - Name: !Sub ${AppName}-cnt
           Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${Repository}:${Tag}
-          EntryPoint:
-            - /usr/sbin/nginx
-            - -g
-            - 'daemon off;'
+# Let the Dockerfile rule in this case.
+#          EntryPoint:
+#            - /usr/sbin/nginx
+#            - -g
+#            - 'daemon off;'
           Essential: true
           Memory: 128
           PortMappings:
@@ -75,3 +76,14 @@ Resources:
           Environment:
             - Name: Tag
               Value: !Ref Tag
+            - Name: TWIG_API_LDAP_URL
+              Value: ldap://todo
+            - Name: TWIG_API_LOG_CONSOLE
+              Value: true
+            - Name: TWIG_API_LOG_FILE
+              Value: true
+            - Name: TWIG_API_LOG_LEVEL
+              Value: info
+            - Name: TWIG_API_DB_URL
+              Value: http://couchdb.riglet:5984
+
