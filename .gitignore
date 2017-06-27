@@ -17,3 +17,5 @@ config.toml
 logs/*.log.*
 
 .nyc_output
+
+templates.zip
