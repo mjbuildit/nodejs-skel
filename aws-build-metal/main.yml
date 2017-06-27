@@ -59,6 +59,15 @@ Parameters:
     Default: 80
     Description:  The ECS instance port number on which your service is exposed.  '0' for automatic assignment.
 
+  CouchDbUrl:
+    Type: String
+    Default: http://couchdb.riglet:5984
+    Description:  The URL for Twig-API's backing store.
+
+  CouchDbTenant:
+    Type: String
+    Description:  The name of the logical database Twig-API should connect to, such as 'staging' or 'jdoe'.
+
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -323,7 +332,9 @@ Resources:
                     "Repository": "${Repository}",
                     "ContainerPort": "${ContainerPort}",
                     "HostPort": "${HostPort}",
-                    "AppName": "${AppName}"
+                    "AppName": "${AppName}",
+                    "CouchDbUrl": "${CouchDbUrl}",
+                    "CouchDbTenant": "${CouchDbTenant}"
                   }
               InputArtifacts:
                 - Name: Template

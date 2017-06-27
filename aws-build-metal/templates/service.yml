@@ -24,6 +24,12 @@ Parameters:
   HostPort:
     Type: Number
 
+  CouchDbUrl:
+    Type: String
+
+  CouchDbTenant:
+    Type: String
+
 
 Resources:
   ECSServiceRole:
@@ -85,5 +91,7 @@ Resources:
             - Name: TWIG_API_LOG_LEVEL
               Value: info
             - Name: TWIG_API_DB_URL
-              Value: http://couchdb.riglet:5984
+              Value: !Ref CouchDbUrl
+            - Name: TWIG_API_TENANT
+              Value: !Ref CouchDbTenant
 
