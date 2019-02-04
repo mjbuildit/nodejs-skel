@@ -1,0 +1,3 @@
+DB_PASSWORD Password for database
+BIND_PORT Port on which to listen
+SOME_VAR an extra variable which is awesome
